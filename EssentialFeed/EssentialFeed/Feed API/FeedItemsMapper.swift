@@ -17,6 +17,8 @@ internal final class FeedItemsMapper {
         }
     }
     
+    internal typealias Error = RemoteFeedLoader.Error
+    
     private struct Item: Decodable {
         public let id: UUID
         public let description: String?
