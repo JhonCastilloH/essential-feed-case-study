@@ -13,29 +13,26 @@ class EssentialFeedAPIEndtoEndTests: XCTestCase {
     
     
     func test_endToEndServerGETFeddResult_matchesFixedTestAccountData()  {
-        measure {
+        var recievedResult = getFeedResult()
+        
+        switch recievedResult {
+        case let .success(items):
             
-            var recievedResult = getFeedResult()
+            XCTAssertEqual(items.count, 8, "Expected 8 items in the test account feed")
+            XCTAssertEqual(items[0], expectedItem(at: 0))
+            XCTAssertEqual(items[1], expectedItem(at: 1))
+            XCTAssertEqual(items[2], expectedItem(at: 2))
+            XCTAssertEqual(items[3], expectedItem(at: 3))
+            XCTAssertEqual(items[4], expectedItem(at: 4))
+            XCTAssertEqual(items[5], expectedItem(at: 5))
+            XCTAssertEqual(items[6], expectedItem(at: 6))
+            XCTAssertEqual(items[7], expectedItem(at: 7))
             
-            switch recievedResult {
-            case let .success(items):
-                
-                XCTAssertEqual(items.count, 8, "Expected 8 items in the test account feed")
-                XCTAssertEqual(items[0], expectedItem(at: 0))
-                XCTAssertEqual(items[1], expectedItem(at: 1))
-                XCTAssertEqual(items[2], expectedItem(at: 2))
-                XCTAssertEqual(items[3], expectedItem(at: 3))
-                XCTAssertEqual(items[4], expectedItem(at: 4))
-                XCTAssertEqual(items[5], expectedItem(at: 5))
-                XCTAssertEqual(items[6], expectedItem(at: 6))
-                XCTAssertEqual(items[7], expectedItem(at: 7))
-                
-            case let .failure(error):
-                XCTFail("Expected successful feed result, got \(error) intead")
-            default:
-                XCTFail("Expected succesful feed result, got no result instead")
-            }
-        }
+        case let .failure(error):
+            XCTFail("Expected successful feed result, got \(error) intead")
+        default:
+            XCTFail("Expected succesful feed result, got no result instead")
+        }        
     }
     
     //MARK: HELPERS
