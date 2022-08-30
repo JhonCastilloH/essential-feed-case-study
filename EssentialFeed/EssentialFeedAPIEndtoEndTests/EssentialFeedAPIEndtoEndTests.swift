@@ -13,7 +13,7 @@ class EssentialFeedAPIEndtoEndTests: XCTestCase {
     
     
     func test_endToEndServerGETFeddResult_matchesFixedTestAccountData()  {
-        var recievedResult = getFeedResult()
+        let recievedResult = getFeedResult()
         
         switch recievedResult {
         case let .success(items):
