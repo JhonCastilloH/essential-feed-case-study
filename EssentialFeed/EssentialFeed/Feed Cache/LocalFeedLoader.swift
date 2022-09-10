@@ -13,7 +13,7 @@ public final class LocalFeedLoader {
     private let currentDate: () -> Date
     
     public typealias SaveResult = Error?
-    public typealias RetriveResult = Error?
+    public typealias RetriveResult = LoadFeedResult
     
     public init(store: FeedStore, currentDate: @escaping () -> Date) {
         self.store = store
@@ -32,7 +32,11 @@ public final class LocalFeedLoader {
     }
     
     public func load(completion: @escaping (RetriveResult) -> Void) {
-        store.retrive(completion: completion)
+        store.retrive { error in
+            if let error = error {
+                completion(.failure(error))
+            }
+        }
     }
     
     private func cache(_ feed: [FeedImage], completion: @escaping (SaveResult) -> Void) {
