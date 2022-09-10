@@ -10,7 +10,7 @@ import XCTest
 import EssentialFeed
 
 class LoadFeedFromCacheUseCaseTests: XCTestCase {
-
+    
     func test_init_doesNotMessageStoreUponCreation() {
         let (_, store) = makeSUT()
         
@@ -53,6 +53,17 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         })
     }
     
+    func test_load_deliversNoImagesOnSevenDaysOldCache() {
+        let (sut, store) = makeSUT()
+        let feed = uniqueImageFeed()
+        let fixedCurrentDate = Date()
+        let lessThanSevenDaysOldTimestamp = fixedCurrentDate.adding(days: -7)
+        
+        expect(sut, toCompleteWith: .success([]), when: {
+            store.completeRetrieval(with: feed.local, timestamp: lessThanSevenDaysOldTimestamp)
+        })
+    }
+    
     
     //MARK: - Helpers
     
@@ -64,7 +75,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         return (sut, store)
     }
     
-               private func expect(_ sut: LocalFeedLoader,toCompleteWith expectedResult: LocalFeedLoader.RetriveResult, when action: @escaping () -> Void, file: StaticString = #file, line: UInt = #line){
+    private func expect(_ sut: LocalFeedLoader,toCompleteWith expectedResult: LocalFeedLoader.RetriveResult, when action: @escaping () -> Void, file: StaticString = #file, line: UInt = #line){
         
         let exp = expectation(description: "Wait for load completion")
         sut.load() { receivedResult in
@@ -99,7 +110,7 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         let local = models.map { LocalFeedImage(id: $0.id, description: $0.description, location: $0.location, url: $0.url )}
         return (models, local)
     }
-
+    
 }
 
 
