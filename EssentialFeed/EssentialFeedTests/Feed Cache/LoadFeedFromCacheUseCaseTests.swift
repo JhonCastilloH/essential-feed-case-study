@@ -75,6 +75,15 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         
     }
     
+    func test_load_doesNotDeleteCacheOnEmptyCache() {
+        let (sut, store) = makeSUT()
+        
+        sut.load() { _ in }
+        store.completeRetrievalWithEmpty()
+        
+        XCTAssertEqual(store.receivedMessages, [.retrive])
+        
+    }
     
     //MARK: - Helpers
     
