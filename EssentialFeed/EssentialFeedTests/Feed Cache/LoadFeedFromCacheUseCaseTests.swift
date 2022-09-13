@@ -72,17 +72,15 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         store.completeRetrieval(with: retrievalError)
         
         XCTAssertEqual(store.receivedMessages, [.retrive])
-        
     }
     
-    func test_load_doesNotDeleteCacheOnEmptyCache() {
+    func test_load_hasNoSideEffectsOnEmptyCache() {
         let (sut, store) = makeSUT()
         
         sut.load() { _ in }
         store.completeRetrievalWithEmpty()
         
         XCTAssertEqual(store.receivedMessages, [.retrive])
-        
     }
     
     func test_load_doesNotDeleteCacheOnLessThanSevenDaysOldCache() {
@@ -95,7 +93,6 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         store.completeRetrieval(with: feed.local, timestamp: lessThanSevenDaysOldTimestamp)
         
         XCTAssertEqual(store.receivedMessages, [.retrive])
-        
     }
     
     func test_load_deletesCacheOnSevenDaysOldCache() {
@@ -108,7 +105,6 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         store.completeRetrieval(with: feed.local, timestamp: sevenDaysOldTimestamp)
         
         XCTAssertEqual(store.receivedMessages, [.retrive, .deleteCacheFeed])
-        
     }
     
     func test_load_doesNotDeliverResultAfterSUTInstanceHasBeenDeallocated() {
@@ -122,7 +118,6 @@ class LoadFeedFromCacheUseCaseTests: XCTestCase {
         store.completeRetrievalWithEmpty()
         
         XCTAssertTrue(capturedResults.isEmpty)
-        
     }
     
     //MARK: - Helpers
