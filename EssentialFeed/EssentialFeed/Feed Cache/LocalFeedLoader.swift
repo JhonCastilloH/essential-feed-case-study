@@ -9,34 +9,28 @@
 import Foundation
 
 public final class FeedCachePolicy {
-    private let currentDate: () -> Date
     private let calendar = Calendar(identifier: .gregorian)
-    
-    public init(currentDate: @escaping () -> Date) {
-        self.currentDate = currentDate
-    }
     
     private var maxCacheAgeInDays: Int {
         return 7
     }
     
-    public func validate(_ timestamp: Date) -> Bool {
+    public func validate(_ timestamp: Date, against date: Date) -> Bool {
         guard let maxCacheAge = calendar.date(byAdding: .day, value: maxCacheAgeInDays, to: timestamp) else {
             return false
         }
-        return currentDate() < maxCacheAge
+        return date < maxCacheAge
     }
 }
 
 public final class LocalFeedLoader {
     private let store: FeedStore
     private let currentDate: () -> Date
-    private let feedCachePolicy: FeedCachePolicy
+    private let feedCachePolicy = FeedCachePolicy()
     
     public init(store: FeedStore, currentDate: @escaping () -> Date) {
         self.store = store
         self.currentDate = currentDate
-        self.feedCachePolicy = FeedCachePolicy(currentDate: currentDate)
     }
     
 }
@@ -71,7 +65,7 @@ extension LocalFeedLoader: FeedLoader {
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case let .found(feed, timestamp) where self.feedCachePolicy.validate(timestamp):
+            case let .found(feed, timestamp) where self.feedCachePolicy.validate(timestamp, against: self.currentDate()):
                 completion(.success(feed.toModels()))
             case .found, .empty:
                 completion(.success([]))
@@ -86,7 +80,7 @@ extension LocalFeedLoader {
         store.retrive { [weak self] result in
             guard let self = self else { return }
             switch result {
-            case let .found(_, timestamp)  where !self.feedCachePolicy.validate(timestamp):
+            case let .found(_, timestamp)  where !self.feedCachePolicy.validate(timestamp, against: self.currentDate()):
                 self.store.deleteCacheFeed { _ in }
             case .failure:
                 self.store.deleteCacheFeed { _ in }
