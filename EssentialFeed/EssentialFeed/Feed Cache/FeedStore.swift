@@ -17,8 +17,8 @@ public enum RetrieveCachedFeedResult {
 public protocol FeedStore {
     typealias DeletionCompletion = (Error?) -> Void
     typealias InsertionCompletion = (Error?) -> Void
-    typealias RetriveCompletion = (RetrieveCachedFeedResult) -> Void
+    typealias RetrieveCompletion = (RetrieveCachedFeedResult) -> Void
     func deleteCacheFeed(completion: @escaping DeletionCompletion)
     func insert(_ feed:[LocalFeedImage], timestamp: Date, completion: @escaping InsertionCompletion)
-    func retrive(completion: @escaping RetriveCompletion)
+    func retrive(completion: @escaping RetrieveCompletion)
 }
