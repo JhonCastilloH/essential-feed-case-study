@@ -9,8 +9,7 @@
 import XCTest
 import EssentialFeed
 
-
-class CodableFeedStoreTests: XCTestCase {
+class CodableFeedStoreTests: XCTestCase, FailableFeedSotre {
     
     override func setUp() {
         super.setUp()
@@ -154,14 +153,14 @@ class CodableFeedStoreTests: XCTestCase {
 //        XCTAssertNotNil(deletionError, "Expected cache deletion to fail with an error")
 //    }
     
-    func test_delete_hasNoSideEffectsOnDeletionError() {
-        let noDeletePermissionURL = cachesDirectory()
-        let sut = makeSUT(storeURL: noDeletePermissionURL)
-        
-        deleteCache(from: sut)
-    
-        expect(sut, toRetrieve: .empty)
-    }
+//    func test_delete_hasNoSideEffectsOnDeletionError() {
+//        let noDeletePermissionURL = cachesDirectory()
+//        let sut = makeSUT(storeURL: noDeletePermissionURL)
+//
+//        deleteCache(from: sut)
+//
+//        expect(sut, toRetrieve: .empty)
+//    }
     
     func test_storeSideEffects_runSerially() {
         let sut = makeSUT()
