@@ -50,7 +50,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedSotre {
         let sut = makeSUT(storeURL: storeURL)
         
         try! "invalid data".write(to: storeURL, atomically: false, encoding: .utf8)
-                
+        
         assertThatRetrieveDeliversFailureOnRetrievalError(on: sut)
     }
     
@@ -102,7 +102,7 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedSotre {
     
     func test_delete_hasNoSideEffectsOnEmptyCache() {
         let sut = makeSUT()
-                
+        
         assertThatDeleteHasNoSideEffectsOnEmptyCache(on: sut)
     }
     
@@ -114,27 +114,23 @@ class CodableFeedStoreTests: XCTestCase, FailableFeedSotre {
     
     func test_delete_emptiesPreviouslyInsertedCache() {
         let sut = makeSUT()
-                
+        
         assertThatDeleteEmptiesPreviouslyInsertedCache(on: sut)
     }
     
-    //    func test_delete_deliversErrorOnDeletionError() {
-    //        let noDeletePermissionURL = cachesDirectory()
-    //        let sut = makeSUT(storeURL: noDeletePermissionURL)
-    //
-    //        let deletionError = deleteCache(from: sut)
-    //
-    //        XCTAssertNotNil(deletionError, "Expected cache deletion to fail with an error")
-    //    }
+    func test_delete_deliversErrorOnDeletionError() {
+        let noDeletePermissionURL = cachesDirectory()
+        let sut = makeSUT(storeURL: noDeletePermissionURL)
+        
+        assertThatDeleteDeliversErrorOnDeletionError(on: sut)
+    }
     
-    //    func test_delete_hasNoSideEffectsOnDeletionError() {
-    //        let noDeletePermissionURL = cachesDirectory()
-    //        let sut = makeSUT(storeURL: noDeletePermissionURL)
-    //
-    //        deleteCache(from: sut)
-    //
-    //        expect(sut, toRetrieve: .empty)
-    //    }
+    func test_delete_hasNoSideEffectsOnDeletionError() {
+        let noDeletePermissionURL = cachesDirectory()
+        let sut = makeSUT(storeURL: noDeletePermissionURL)
+        
+        assertThatDeleteHasNoSideEffectsOnDeletionError(on: sut)
+    }
     
     func test_storeSideEffects_runSerially() {
         let sut = makeSUT()
